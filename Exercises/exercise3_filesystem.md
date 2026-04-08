@@ -65,17 +65,17 @@ Fill in the following table based on your exploration:
 
 | Directory | Your Answer |
 |---|---|
-| `/bin` | ? |
-| `/sbin` | ? |
-| `/etc` | ? |
-| `/var` | ? |
-| `/var/log` | ? |
-| `/tmp` | ? |
-| `/home` | ? |
-| `/usr` | ? |
-| `/opt` | ? |
-| `/dev` | ? |
-| `/proc` | ? |
+| `/bin` | Essential binaries (ls, cp, mv, bash, ...) |
+| `/sbin` | System administraiton binaries (fdisk, iptables,...) |
+| `/etc` | (System configuration files) |
+| `/var` | variable data (logs, caches, spool,...) |
+| `/var/log` | (System and service log files) |
+| `/tmp` | Temporary files (cleared on reboot) |
+| `/home` | User home directories |
+| `/usr` | User programs and librairies |
+| `/opt` | Third-party software installed |
+| `/dev` | Device files (disks, terminals,...) |
+| `/proc` | Virtual filesystem (kernel and process information) |
 
 ### 1.3 Explore /proc (Virtual Filesystem)
 
@@ -144,13 +144,13 @@ ls -la /usr/bin/awk # l = symbolic link
 
 | Character | Type | Example |
 |---|---|---|
-| `-` | ? | ? |
-| `d` | ? | ? |
-| `l` | ? | ? |
-| `c` | ? | ? |
-| `b` | ? | ? |
-| `p` | ? | ? |
-| `s` | ? | ? |
+| `-` | Regular file | `/bin/bash` |
+| `d` | Directory | `/etc` |
+| `l` | Symbolic link | `/usr/bin/awk` |
+| `c` | Character device | `/dev/null` |
+| `b` | Block device | `/dev/sda` |
+| `p` | Named pipe (FIFO) | Created with `mkfifo` |
+| `s` | Socket | `/var/run/docker.sock` |
 
 ---
 
@@ -240,10 +240,32 @@ find /tmp/search -type f ! -name "*.log"
 Without looking at the examples above, write the `find` commands to:
 
 1. Find all `.css` files in `/tmp/search`
+```bash
+find /tmp/search -name "*.css"
+```
 2. Find all directories named exactly `project1`
+
+```bash
+find /tmp/search -type d -name "project1"
+```
+
 3. Find all files larger than 5 bytes
+
+```bash
+find /tmp/search -type f -size +5c
+```
+
 4. Find all `.log` files and delete them (with confirmation)
+
+```bash
+find /tmp/search -type f -name "*.log" -exec rm -i {} \;
+```
+
 5. Find all files and display their type with `file`
+
+```bash
+find /tmp/search -type f -exec file {} \;
+```
 
 ---
 
@@ -278,6 +300,11 @@ du -h /usr --max-depth=1 2>/dev/null | sort -rh | head -5
 ### 4.3 Quick Exercise
 
 Find the 3 largest files in `/usr/bin`. Which commands and options will you use?
+
+
+```bash
+find /usr/bin -type f -exec du -h {} \; | sort -rh | head -3
+```
 
 ---
 

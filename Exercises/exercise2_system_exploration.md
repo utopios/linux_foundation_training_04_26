@@ -63,6 +63,8 @@ cat /proc/loadavg
 
 # Hostname
 cat /proc/sys/kernel/hostname
+
+cat /proc/version
 ```
 
 **Questions:**

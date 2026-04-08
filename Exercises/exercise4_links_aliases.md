@@ -213,12 +213,12 @@ Based on the experiments you just performed, complete this comparison table:
 
 | Feature | Hard Link | Symbolic Link |
 |---|---|---|
-| Same inode as target? | ? | ? |
-| Works across filesystems? | ? | ? |
-| Can link to directories? | ? | ? |
-| Survives target deletion? | ? | ? |
-| Shows `->` in `ls -l`? | ? | ? |
-| File type indicator | ? | ? |
+| Same inode as target? | Yes | No (own inode) |
+| Works across filesystems? | No | Yes |
+| Can link to directories? | No | Yes |
+| Survives target deletion? | Yes (data persists) | No (becomes broken) |
+| Shows `->` in `ls -l`? | No | Yes |
+| File type indicator | `-` (regular file) | `l` (link) |
 
 ---
 
@@ -265,6 +265,45 @@ To make aliases permanent, add them to `~/.bashrc`. Create a set of useful alias
 
 > **Hint**: Use `cat >> ~/.bashrc << 'EOF' ... EOF` to append a block. Don't forget to `source ~/.bashrc` afterward.
 
+```bash
+# Edit .bashrc
+cat >> ~/.bashrc << 'EOF'
+
+# === Custom Aliases ===
+# Navigation
+alias ll='ls -la --color=auto'
+alias la='ls -A --color=auto'
+alias l='ls -CF --color=auto'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias home='cd ~'
+
+# Safety
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# System info
+alias ports='ss -tulnp'
+alias mem='free -h'
+alias disk='df -h'
+alias top10='du -sh * 2>/dev/null | sort -rh | head -10'
+
+# Shortcuts
+alias update='apt update && apt upgrade -y'
+alias cls='clear'
+alias h='history'
+alias grep='grep --color=auto'
+EOF
+
+# Reload .bashrc
+source ~/.bashrc
+
+# Test the new aliases
+ll /tmp
+disk
+```
+
 ### 4.4 Useful Alias Patterns
 
 Try creating these advanced aliases:
@@ -273,6 +312,27 @@ Try creating these advanced aliases:
 2. An alias `extract` that detects archive types (`.tar.gz`, `.zip`, `.bz2`) and uses the appropriate extraction command
 
 > **Hint**: You can embed a function inside an alias: `alias name='function _f(){ ...; }; _f'`
+
+```bash
+alias mkcd='function _mkcd(){ mkdir -p "$1" && cd "$1"; }; _mkcd'
+
+alias extract='function _extract(){
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2) tar xjf "$1" ;;
+      *.tar.gz)  tar xzf "$1" ;;
+      *.bz2)     bunzip2 "$1" ;;
+      *.gz)      gunzip "$1" ;;
+      *.tar)     tar xf "$1" ;;
+      *.zip)     unzip "$1" ;;
+      *)         echo "Cannot extract $1" ;;
+    esac
+  else
+    echo "$1 is not a valid file"
+  fi
+}; _extract'
+
+```
 
 ### 4.5 Bypassing an Alias
 

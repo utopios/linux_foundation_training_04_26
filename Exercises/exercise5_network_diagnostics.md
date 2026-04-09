@@ -190,6 +190,31 @@ docker exec -it client bash
 
 Write a loop that tests ports 22, 80, 443, 3306, 5432, 8080, 8443 on both the web server (172.25.0.10) and the database server (172.25.0.20), and reports which ports are OPEN and which are CLOSED.
 
+
+```bash
+# Scan common ports on the web server
+echo "=== Web Server Port Scan ==="
+for port in 22 80 443 3306 5432 8080 8443; do
+  result=$(nc -zv -w1 172.25.0.10 $port 2>&1)
+  if echo "$result" | grep -q "succeeded"; then
+    echo "  Port $port: OPEN"
+  else
+    echo "  Port $port: CLOSED"
+  fi
+done
+
+echo ""
+echo "=== DB Server Port Scan ==="
+for port in 22 80 443 3306 5432 8080 8443; do
+  result=$(nc -zv -w1 172.25.0.20 $port 2>&1)
+  if echo "$result" | grep -q "succeeded"; then
+    echo "  Port $port: OPEN"
+  else
+    echo "  Port $port: CLOSED"
+  fi
+done
+```
+
 > **Hint**: Use `nc -zv -w1` to test each port. Check the exit code or output for "succeeded".
 
 ---
@@ -225,6 +250,8 @@ By default, all policies should be ACCEPT (no firewall rules).
 
 Scenario: Block all traffic from the client (172.25.0.100) to the web server.
 
+iptables -A INPUT -s 172.25.0.100 -j DROP
+
 **Task**: Write the iptables command to add an INPUT rule that DROPs all traffic from 172.25.0.100. Then test from the client using `curl` and `ping` to verify it's blocked. Also verify that traffic from db-server (172.25.0.20) still works.
 
 ### 4.4 Allow Only HTTP, Block Everything Else
@@ -233,11 +260,19 @@ Remove the previous rule and create a proper firewall configuration:
 
 **Task**: Write iptables rules on the web server that:
 1. Flush all existing rules
+iptables -F
 2. Allow established/related connections
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
 3. Allow loopback traffic
+iptables -A INPUT -i lo -j ACCEPT
 4. Allow HTTP (port 80) from anyone
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 5. Allow ping (ICMP) from anyone
+iptables -A INPUT -p icmp -j ACCEPT
 6. Drop everything else
+iptables -A INPUT -j DROP
 
 Test from the client: HTTP and ping should work, but other ports (e.g., 22) should be blocked.
 

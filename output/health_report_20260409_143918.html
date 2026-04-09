@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Health Report - scripting-lab</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header .subtitle { opacity: 0.8; font-size: 14px; }
+        .health-score {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .health-score .score {
+            font-size: 72px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .health-score .label { font-size: 18px; color: #7f8c8d; }
+        .health-score .trend { font-size: 16px; color: #95a5a6; margin-top: 5px; }
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .info-item { padding: 8px 0; }
+        .info-item .label { color: #7f8c8d; font-size: 13px; }
+        .info-item .value { font-size: 16px; font-weight: 500; }
+        .gauge-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .gauge {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            padding: 15px;
+        }
+        .gauge .title { font-size: 14px; color: #7f8c8d; margin-bottom: 10px; }
+        .gauge .value { font-size: 36px; font-weight: bold; }
+        .gauge .trend { font-size: 13px; color: #95a5a6; margin-top: 5px; }
+        .progress-bar {
+            height: 12px;
+            background: #ecf0f1;
+            border-radius: 6px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.3s;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        th { background: #f8f9fa; font-weight: 600; font-size: 13px; color: #7f8c8d; }
+        td { font-size: 14px; }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .alert-banner {
+            background: #e74c3c;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #95a5a6;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>System Health Report</h1>
+        <div class="subtitle">scripting-lab &mdash; 2026-04-09 14:39:18</div>
+    </div>
+
+    <!-- Health Score -->
+    <div class="health-score">
+        <div class="label">Overall Health Score</div>
+        <div class="score">65/100</div>
+        <div class="trend">Trend: &#9654; 0</div>
+    </div>
+
+    <!-- System Info -->
+    <div class="section">
+        <h2>System Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">Hostname</div>
+                <div class="value">scripting-lab</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Operating System</div>
+                <div class="value">Ubuntu 22.04.5 LTS</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Kernel</div>
+                <div class="value">5.10.124-linuxkit</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Uptime</div>
+                <div class="value">up 2 days, 17 hours, 41 minutes</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Logged-in Users</div>
+                <div class="value">0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Report Generated</div>
+                <div class="value">2026-04-09 14:39:18</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CPU & Memory Gauges -->
+    <div class="section">
+        <h2>CPU &amp; Memory</h2>
+        <div class="gauge-container">
+            <div class="gauge">
+                <div class="title">CPU Usage</div>
+                <div class="value" style="color: #27ae60">%</div>
+                <span class="status-badge" style="background: #27ae60">OK</span>
+                <div class="progress-bar">
+                    <div class="fill" style="width: %; background: #27ae60"></div>
+                </div>
+                <div class="trend">Trend: &#8212;</div>
+            </div>
+            <div class="gauge">
+                <div class="title">Memory Usage</div>
+                <div class="value" style="color: #27ae60">4.8%</div>
+                <span class="status-badge" style="background: #27ae60">OK</span>
+                <div class="progress-bar">
+                    <div class="fill" style="width: 4.8%; background: #27ae60"></div>
+                </div>
+                <div class="trend">382 MB / 7951 MB (Free: 6006 MB) | Trend: &#8212;</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disk Usage -->
+    <div class="section">
+        <h2>Disk Usage</h2>
+        <table>
+            <tr><th>Mount Point</th><th>Size</th><th>Used</th><th>Available</th><th>Usage</th><th>Status</th></tr>
+            <tr>
+                <td>/</td>
+                <td>16G</td>
+                <td>2.7G</td>
+                <td>13G</td>
+                <td>19%</td>
+                <td><span class="status-badge" style="background: #27ae60">OK</span></td>
+            </tr>
+            <tr>
+                <td>/output</td>
+                <td>461G</td>
+                <td>453G</td>
+                <td>8.2G</td>
+                <td>99%</td>
+                <td><span class="status-badge" style="background: #e74c3c">CRITICAL</span></td>
+            </tr>
+            <tr>
+                <td>/etc/hosts</td>
+                <td>16G</td>
+                <td>2.7G</td>
+                <td>13G</td>
+                <td>19%</td>
+                <td><span class="status-badge" style="background: #27ae60">OK</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Network Connectivity -->
+    <div class="section">
+        <h2>Network Connectivity</h2>
+        <table>
+            <tr><th>Service</th><th>Host</th><th>Latency</th><th>Status</th></tr>
+            <tr>
+                <td>Google_DNS</td>
+                <td>8.8.8.8</td>
+                <td>N/A</td>
+                <td><span class="status-badge" style="background: #e74c3c">FAILED</span></td>
+            </tr>
+            <tr>
+                <td>Cloudflare_DNS</td>
+                <td>1.1.1.1</td>
+                <td>N/A</td>
+                <td><span class="status-badge" style="background: #e74c3c">FAILED</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Log Analysis -->
+    <div class="section">
+        <h2>Log Analysis</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">Total Log Lines</div>
+                <div class="value">0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Status</div>
+                <div class="value"><span class="status-badge" style="background: #27ae60">OK</span></div>
+            </div>
+            <div class="info-item">
+                <div class="label">Errors</div>
+                <div class="value" style="color: #e74c3c">0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Warnings</div>
+                <div class="value" style="color: #f39c12">0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Auth Failures</div>
+                <div class="value" style="color: #e74c3c">0</div>
+            </div>
+        </div>
+        <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 16px;">Top Error Messages</h3>
+        <pre></pre>
+    </div>
+
+    <!-- Bonus 1: Top Processes -->
+    <div class="section">
+        <h2>Top Processes</h2>
+        <pre>=== Top 5 by CPU ===
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.3  0.0   4136  3356 pts/0    Ss   14:38   0:00 bash
+root       437  0.0  0.0   4276  3488 pts/0    S+   14:39   0:00 /bin/bash ./lab3_solution.sh
+root       489  0.0  0.0   4276  2128 pts/0    S+   14:39   0:00 /bin/bash ./lab3_solution.sh
+root       490  0.0  0.0   6440  1652 pts/0    R+   14:39   0:00 ps aux --sort=-%cpu
+root       491  0.0  0.0   2236   800 pts/0    S+   14:39   0:00 head -6
+
+=== Top 5 by Memory ===
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       437  0.0  0.0   4276  3488 pts/0    S+   14:39   0:00 /bin/bash ./lab3_solution.sh
+root         1  0.3  0.0   4136  3356 pts/0    Ss   14:38   0:00 bash
+root       489  0.0  0.0   4276  2128 pts/0    S+   14:39   0:00 /bin/bash ./lab3_solution.sh
+root       492  0.0  0.0   6440  1652 pts/0    R+   14:39   0:00 ps aux --sort=-%mem
+root       493  0.0  0.0   2236   780 pts/0    S+   14:39   0:00 head -6</pre>
+    </div>
+
+    <div class="footer">
+        Generated by System Health Monitor &mdash; 2026-04-09 14:39:18
+    </div>
+
+</div>
+</body>
+</html>

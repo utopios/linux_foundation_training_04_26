@@ -1,0 +1,13 @@
+=== User Creation Report ===
+Date: Thu Apr  9 07:23:47 UTC 2026
+Source: users.csv
+---
+USER SKIPPED: alice (already exists)
+USER SKIPPED: bob (already exists)
+USER SKIPPED: charlie (already exists)
+USER SKIPPED: david (already exists)
+USER SKIPPED: eve (already exists)
+USER SKIPPED: frank (already exists)
+
+---
+Processing complete at Thu Apr  9 07:23:47 UTC 2026

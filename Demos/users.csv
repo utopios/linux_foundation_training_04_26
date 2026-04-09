@@ -1,0 +1,8 @@
+username,fullname,group,shell
+alice,Alice Martin,developers,/bin/bash
+bob,Bob Johnson,developers,/bin/bash
+charlie,Charlie Brown,operations,/bin/bash
+david,David Wilson,operations,/bin/bash
+eve,Eve Davis,management,/bin/bash
+frank,Frank Miller,management,/bin/bash
+grace,Grace Lee,developers,/bin/bash
